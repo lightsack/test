@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sys.sys01">
+	<!-- 창고 목록 조회 -->
+	<select id="selectMstList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys01.selectMstList */
+		       MAIN_CD  ORG_MAIN_CD
+             , MAIN_CD
+             , MAIN_NM
+             , SORT
+             , USE_YN
+             , REG_ID
+             , REG_TIME
+             , UPD_ID
+             , UPD_TIME
+		  FROM TB_COM_MST
+		 WHERE 1=1
+			<if test='mainNm not in {null, ""}'>
+				AND (
+					    UPPER(MAIN_CD) LIKE CONCAT('%',UPPER(#{mainNm}),'%')
+					 OR UPPER(MAIN_NM) LIKE CONCAT('%',UPPER(#{mainNm}),'%')
+					)
+		 	</if>
+		 ORDER BY SORT
+		        , MAIN_CD
+	</select>
+	
+	<select id="selectDtlList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys01.selectDtlList */
+		       MAIN_CD
+             , SUB_CD  ORG_SUB_CD
+             , SUB_CD
+             , SUB_NM
+             , SORT
+             , USE_YN
+             , REG_ID
+             , REG_TIME
+             , UPD_ID
+             , UPD_TIME
+		  FROM TB_COM_DTL
+		 WHERE MAIN_CD = #{orgMainCd}
+		 ORDER BY SORT
+		        , SUB_CD
+	</select>
+	
+	<!-- 창고목록정보 수정 -->
+	<insert id="insertMstData" parameterType="map">
+		/* PID : sys.sys01.mergeMstData */
+		INSERT INTO TB_COM_MST( MAIN_CD
+                              , MAIN_NM
+                              , SORT
+                              , USE_YN
+                              , REG_ID
+                              , REG_TIME
+                              , UPD_ID
+                              , UPD_TIME
+                              )
+                        VALUES( #{mainCd}
+                              , #{mainNm}
+                              , #{sort}
+                              , #{useYn}
+                              , #{loginId}
+                              , NOW()
+                              , #{loginId}
+                              , NOW()
+                              )
+	</insert>
+
+	<update id="updateMstData" parameterType="map">
+		/* PID : sys.sys01.updateMstData */
+        BEGIN
+            UPDATE TB_COM_MST
+               SET MAIN_CD  = #{mainCd}
+                 , MAIN_NM  = #{mainNm}
+                 , SORT     = #{sort}
+                 , USE_YN   = #{useYn}
+                 , UPD_ID   = #{loginId}
+                 , UPD_TIME = NOW()
+             WHERE MAIN_CD = #{orgMainCd};
+            
+            IF #{orgMainCd} != #{mainCd} THEN
+                UPDATE TB_COM_DTL
+                   SET MAIN_CD  = #{mainCd}
+                 WHERE MAIN_CD  = #{orgMainCd};
+            END IF;
+        END;
+	</update>
+	
+	<insert id="insertDtlData" parameterType="map">
+		INSERT INTO TB_COM_DTL( MAIN_CD  /* PID : sys.sys01.insertDtlData */
+                              , SUB_CD
+                              , SUB_NM
+                              , SORT
+                              , USE_YN
+                              , REG_ID
+                              , REG_TIME
+                              , UPD_ID
+                              , UPD_TIME
+                              )
+                        VALUES( #{mainCd}
+                              , #{subCd}
+                              , #{subNm}
+                              , #{sort}
+                              , #{useYn}
+                              , #{loginId}
+                              , NOW()
+                              , #{loginId}
+                              , NOW()
+                              )
+	</insert>
+
+	<update id="updateDtlData" parameterType="map">
+        UPDATE TB_COM_DTL  /* PID : sys.sys01.updateDtlData */
+           SET MAIN_CD  = #{mainCd}
+             , SUB_CD   = #{subCd}
+             , SUB_NM   = #{subNm}
+             , SORT     = #{sort}
+             , USE_YN   = #{useYn}
+             , REG_ID   = #{loginId}
+             , REG_TIME = NOW()
+             , UPD_ID   = #{loginId}
+             , UPD_TIME = NOW()
+         WHERE MAIN_CD  = #{mainCd}
+           AND SUB_CD   = #{orgSubCd}
+	</update>
+	
+	<delete id="deleteDtlData" parameterType="map">
+        DELETE TB_COM_DTL  /* PID : sys.sys01.deleteDtlData */
+         WHERE MAIN_CD  = #{mainCd}
+           AND SUB_CD   = #{orgSubCd}
+	</delete>
+	
+	
+	<!-- 삭제 -->
+	<delete id="deleteMst" parameterType="map">
+        BEGIN
+            /* PID : sys.sys01.deleteData */
+            DELETE TB_COM_MST WHERE MAIN_CD = #{orgMainCd};
+            DELETE TB_COM_DTL WHERE MAIN_CD = #{orgMainCd};
+        END;
+	</delete>
+	
+</mapper>
+

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="std.std05">
+	<!-- 창고 목록 조회 -->
+	<select id="mainList" parameterType="map" resultType="box">
+        SELECT /* PID : std.std05.mainList */
+		       WH_CD  ORG_WH_CD
+             , WH_CD
+             , WH_NM
+             , TEL_NO
+             , ZIP_CD
+             , ADDR1
+             , ADDR2
+             , USE_YN
+             , REG_ID
+             , REG_TIME
+             , UPD_ID
+             , UPD_TIME
+		  FROM TB_WH
+		 WHERE 1=1
+			<if test='whNm not in {null, ""}'>
+				AND (
+					    UPPER(WH_CD) LIKE CONCAT('%',UPPER(#{whNm}),'%')
+					 OR UPPER(WH_NM) LIKE CONCAT('%',UPPER(#{whNm}),'%')
+					)
+		 	</if>
+		 ORDER BY WH_CD
+	</select>
+	
+	<!-- 창고목록정보 수정 -->
+	<update id="insertData" parameterType="map">
+        INSERT INTO TB_WH( WH_CD  /* PID : std.std05.insertData */                       
+                         , WH_NM
+                         , TEL_NO
+                         , ZIP_CD
+                         , ADDR1
+                         , ADDR2
+                         , USE_YN
+                         , REG_ID
+                         , REG_TIME
+                         , UPD_ID
+                         , UPD_TIME
+                         )
+                   VALUES( #{whCd}
+                         , #{whNm}
+                         , #{telNo}
+                         , #{zipCd}
+                         , #{addr1}
+                         , #{addr2}
+                         , #{useYn}
+                         , #{loginId}
+                         , NOW()
+                         , #{loginId}
+                         , NOW()
+                         )
+	</update>
+	
+
+	<!-- 창고목록정보 수정 -->
+	<update id="updateData" parameterType="map">
+		/* PID : std.std05.updateData */
+        UPDATE TB_WH
+           SET WH_CD    = #{whCd}
+             , WH_NM    = #{whNm}
+             , TEL_NO   = #{telNo}
+             , ZIP_CD   = #{zipCd}
+             , ADDR1    = #{addr1}
+             , ADDR2    = #{addr2}
+             , USE_YN   = #{useYn}
+             , UPD_ID   = #{loginId}
+             , UPD_TIME = NOW()
+         WHERE WH_CD    = #{orgWhCd}
+	</update>
+	
+	<!-- 창고목록정보 수정 -->
+	<delete id="deleteData" parameterType="map">
+		/* PID : std.std05.deleteData */
+        DELETE FROM TB_WH
+         WHERE WH_CD = #{orgWhCd}
+	</delete>
+	
+</mapper>

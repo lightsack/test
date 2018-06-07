@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sys.sys00">
+	<!-- 상품 목록 조회 -->
+	<select id="selectGodList" parameterType="map" resultType="box">
+		SELECT /* PID : sys.sys00.selectGodList */
+		       '0'  CHK
+		     , CASE WHEN MOD(ROW_NUMBER() OVER(ORDER BY GOD_CD),2) = 0 THEN 'Y' ELSE 'N' END  CHK_ENBL_YN
+		     , GOD_CD  --상품코드
+		     , GOD_NM --상품명
+		     , GOD_DIV  --상품구분
+		     , FN_COM_NM('GOD02', GOD_DIV) AS GOD_DIV_NM  --상품구분
+		     , SZ_PT_CD --사이즈패턴코드
+		     , FN_COM_NM('GOD01', SZ_PT_CD) AS SZ_PT_NM  --사이즈패턴코드명
+		     , CST_CD   --거래처코드
+		     , FN_CST_NM(CST_CD) AS CST_NM  --거래처명
+		     , IN_PR  --원가
+		     , MAKER  --제조사
+		     , ORIGIN --원산지
+		     , OUTSHELL --겉감
+		     , INSHELL  --안감
+		     , FILLER --충전재
+		     , GOD_MOQ  --상품최소생산수량
+		     , CR_MOQ  --색상최소생산수량
+		     , LOC_NO --로케이션번호
+		     , SORT --순서
+		     , WEAR_YN1 --1월착용여부
+		     , WEAR_YN2 --2월착용여부
+		     , WEAR_YN3 --3월착용여부
+		     , WEAR_YN4 --4월착용여부
+		     , WEAR_YN5 --5월착용여부
+		     , WEAR_YN6 --6월착용여부
+		     , WEAR_YN7 --7월착용여부
+		     , WEAR_YN8 --8월착용여부
+		     , WEAR_YN9 --9월착용여부
+		     , WEAR_YN10 --10월착용여부
+		     , WEAR_YN11 --11월착용여부
+		     , WEAR_YN12 --12월착용여부
+		     , USE_YN     --사용여부
+		     , '20180525'   SALE_DT
+		  FROM TB_GOD
+		 WHERE 1=1
+		   and (GOD_DIV LIKE #{sysDiv}||'%' or sys_div is null)
+		   and sys_cd like 'JK%'
+		   AND ROWNUM &lt;= 12 
+		 ORDER BY GOD_CD
+	</select>
+	
+	<select id="selectGodDtl" parameterType="map" resultType="box">
+		SELECT /* PID : sys.sys00.selectGodDtl */
+		       '0'  CHK
+		     , CASE WHEN MOD(ROW_NUMBER() OVER(ORDER BY GOD_CD),2) = 0 THEN 'Y' ELSE 'N' END  CHK_ENBL_YN
+		     , GOD_CD  --상품코드
+		     , GOD_NM --상품명
+		     , GOD_DIV  --상품구분
+		     , FN_COM_NM('GOD02', GOD_DIV) AS GOD_DIV_NM  --상품구분
+		     , SZ_PT_CD --사이즈패턴코드
+		     , FN_COM_NM('GOD01', SZ_PT_CD) AS SZ_PT_NM  --사이즈패턴코드명
+		     , CST_CD   --거래처코드
+		     , FN_CST_NM(CST_CD) AS CST_NM  --거래처명
+		     , IN_PR  --원가
+		     , MAKER  --제조사
+		     , ORIGIN --원산지
+		     , OUTSHELL --겉감
+		     , INSHELL  --안감
+		     , FILLER --충전재
+		     , GOD_MOQ  --상품최소생산수량
+		     , CR_MOQ  --색상최소생산수량
+		     , LOC_NO --로케이션번호
+		     , SORT --순서
+		     , WEAR_YN1 --1월착용여부
+		     , WEAR_YN2 --2월착용여부
+		     , WEAR_YN3 --3월착용여부
+		     , WEAR_YN4 --4월착용여부
+		     , WEAR_YN5 --5월착용여부
+		     , WEAR_YN6 --6월착용여부
+		     , WEAR_YN7 --7월착용여부
+		     , WEAR_YN8 --8월착용여부
+		     , WEAR_YN9 --9월착용여부
+		     , WEAR_YN10 --10월착용여부
+		     , WEAR_YN11 --11월착용여부
+		     , WEAR_YN12 --12월착용여부
+		     , USE_YN     --사용여부
+		  FROM TB_GOD
+		 WHERE 1=1
+		   and GOD_CD = #{godCd}
+	</select>
+	
+	<!-- 상품목록정보 수정 -->
+	<update id="updateData" parameterType="map">
+		/* PID : sys.sys00.updateData */ 
+		UPDATE TB_GOD
+		   SET GOD_NM   = #{godNm}
+		     , SORT     = #{sort}
+		     , MAKER    = #{maker}
+		     , ORIGIN   = #{origin}
+		     , OUTSHELL = #{outshell}
+		     , INSHELL  = #{inshell}
+		     , FILLER   = #{filler}
+		     , GOD_MOQ  = #{sysMoq}
+		     , CR_MOQ   = #{crMoq}
+             , GOD_DIV  = #{sysdiv}
+             , PRO_DIV  = #{prodiv}
+             , SZ_PT_CD = #{szptcd}
+             , CST_CD   = #{cstcd}
+             , IN_PR    = #{inpr}
+             , LOC_NO   = #{locno}
+		     , UPD_ID = #{loginId}
+		     , UPD_TIME = sysdate
+		 WHERE GOD_CD = #{godCd}
+	</update>
+</mapper>

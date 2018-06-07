@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sys.sys05">
+	<!-- 사용자별 Role -->
+	<select id="mainList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys05.mainList */
+		       USER_ID
+             , USER_NM
+		  FROM TB_USER
+		 WHERE 1=1
+			<if test='userNm not in {null, ""}'>
+				AND (
+					    UPPER(USER_ID) LIKE CONCAT('%',UPPER(#{userNm}),'%')
+					 OR UPPER(USER_NM) LIKE CONCAT('%',UPPER(#{userNm}),'%')
+					)
+		 	</if>
+		 ORDER BY USER_NM
+	</select>
+	
+	<select id="roleList" parameterType="map" resultType="box">
+        SELECT TB_ROLE.ROLE_CD
+             , TB_ROLE.ROLE_NM
+             , CASE WHEN TB_USER_ROLE.ROLE_CD IS NULL THEN 'N' ELSE 'Y' END  CHK
+          FROM TB_ROLE LEFT OUTER JOIN TB_USER_ROLE ON TB_USER_ROLE.ROLE_CD = TB_ROLE.ROLE_CD
+                                                   AND TB_USER_ROLE.USER_ID = #{userId}
+         ORDER BY TB_ROLE.ROLE_CD
+	</select>
+	
+	<select id="progList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys05.progList */
+               P.PROG_ID
+             , CONCAT(CASE WHEN P.PROG_DIV='F' THEN ' ' ELSE '   - ' END, P.PROG_NM)  PROG_NM
+             , CASE WHEN P.PROG_DIV='F' OR R.PROG_ID IS NOT NULL THEN 'N' ELSE 'Y' END  ENBL_YN
+             , CASE WHEN P.PROG_DIV='F' OR (G.PROG_ID IS NULL AND G.PROG_ID IS NULL) THEN 'N' ELSE 'Y' END  CHK
+          FROM TB_PROG P
+               LEFT OUTER JOIN TB_USER_PROG G ON G.PROG_ID = P.PROG_ID
+                                             AND G.USER_ID = #{userId}
+               LEFT OUTER JOIN (
+                                SELECT DISTINCT P.PROG_ID
+                                  FROM TB_USER_ROLE R
+                                     , TB_ROLE_PROG P
+                                 WHERE R.ROLE_CD = P.ROLE_CD
+                                   AND R.USER_ID = #{userId}
+                               ) R
+                            ON R.PROG_ID = P.PROG_ID
+         ORDER BY P.SORT
+	</select>
+	
+	
+	<insert id="insertRoleData" parameterType="map">
+        <if test='chk eq "Y".toString()'>
+            INSERT IGNORE
+                   INTO TB_USER_ROLE( USER_ID
+                                    , ROLE_CD
+                                    , REG_ID
+                                    , REG_TIME
+                                    , UPD_ID
+                                    , UPD_TIME
+                                    )
+                              VALUES( #{userId}
+                                    , #{roleCd}
+                                    , #{loginId}
+                                    , NOW()
+                                    , #{loginId}
+                                    , NOW()
+                                    )
+        </if>
+        <if test='chk neq "Y".toString()'>
+            DELETE FROM TB_USER_ROLE
+             WHERE USER_ID = #{userId}
+               AND ROLE_CD = #{roleCd}
+        </if>
+	</insert>
+
+	<insert id="insertProgData" parameterType="map">
+        <if test='chk eq "Y".toString()'>
+            INSERT INTO TB_USER_PROG( USER_ID
+                                    , PROG_ID
+                                    , REG_ID
+                                    , REG_TIME
+                                    , UPD_ID
+                                    , UPD_TIME
+                                    )
+                             VALUES ( #{userId}
+                                    , #{progId}
+                                    , #{loginId}
+                                    , NOW()
+                                    , #{loginId}
+                                    , NOW()
+                                    )  
+                ON DUPLICATE KEY
+            UPDATE UPD_TIME = NOW()
+        </if>
+        <if test='chk neq "Y".toString()'>
+            DELETE TB_USER_PROG
+             WHERE USER_ID = #{userId}
+               AND PROG_ID = #{progId}
+        </if>
+	</insert>
+
+	
+	
+</mapper>
+

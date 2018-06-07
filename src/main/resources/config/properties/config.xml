@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>configuration properties</comment>
+    
+    <!-- Session Configuration -->
+    <entry key="session.timeout">120</entry>
+    <entry key="session.timeout.manual">Y</entry>
+    
+    
+<!--      jdbc:oracle:thin:@180.210.34.37:1521:xe -->
+
+<!-- jdbc:mysql://180.210.34.37:3306/fsswms?useUnicode=true&characterEncoding=utf8mb4&autoReconnect=true -->
+    
+    
+    <!-- Database -->
+    <entry key="db.driver">org.mariadb.jdbc.Driver</entry>
+	<entry key="db.url">RImfzPawM6JryHqKGuRqzbm7ZyN9n48cjb53lRZ6JrbYFArQi9OEa3VuAMj2hIw3Qmch+Jk3KdLeBZFPYt19WMPjbzRd7Ogdr8m+jR2iOqO8kVJeBv9BxQ/eAo7XBr5CVdyzQHZczlIeE2RwxaTG1hivBu2TLcIzFFQ+mStan9Y=</entry>
+    <entry key="db.username">J551ojhVGISHUb5gibCAwQ==</entry>
+    <entry key="db.password">7hM+BiM2fub7r3ehuAYciA==</entry>
+    <entry key="db.maxActive">4</entry>
+    <entry key="db.maxIdle">4</entry>
+    
+    <!-- 
+    <entry key="db.driver">oracle.jdbc.driver.OracleDriver</entry>
+    <entry key="db.url">6oWZr09cJ0c0hw2lfveRgkZaS3v/+Zjk7j+1QH2KxjpQaBM60rvQwDKmVK0AvlAL</entry>
+    <entry key="db.username">GYxkd6DnD3OcIh9Av5d4ow==</entry>
+    <entry key="db.password">F67q2YnqKWSW5SI5AAK63g==</entry>
+     -->
+     
+     
+    <!-- AES -->
+    <entry key="aes.key">bGtwcGFydG5lcnMjMjAxNw==</entry>
+    
+</properties>

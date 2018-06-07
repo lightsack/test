@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+        "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+        "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+
+	<definition name="base_resource" template="/WEB-INF/jsp/base/include/base_resource.jsp" />
+	
+	<definition name="definition_base">
+		<put-attribute name="title" value="fsswms" />
+		<put-attribute name="resource" value="base_resource" />
+	</definition>
+	
+	<!-- Nolayout -->
+	<definition name="nolayout:/*/*/*/*" template="/WEB-INF/jsp/base/layout/cmn/layout_no_layout.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<!-- Noframe Layout -->
+	<definition name="noframe:/*/*/*/*" extends="definition_base" template="/WEB-INF/jsp/base/layout/cmn/layout_no_frame.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<!-- default Layout -->
+	<definition name="*/*/*/*" template="/WEB-INF/jsp/base/layout/cmn/layout_no_layout.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	
+	<!-- Classic Layout -->
+	<definition name="definition_default" extends="definition_base">
+		<put-attribute name="header" value="/WEB-INF/jsp/base/layout/classic/layout_classic_header.jsp" />
+		<put-attribute name="lnb" value="/WEB-INF/jsp/base/layout/classic/layout_classic_lnb.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/base/layout/classic/layout_classic_footer.jsp" />
+	</definition>
+	
+	<!-- Classic Main Layout -->
+	<definition name="main:/*/*/*/*" extends="definition_default" template="/WEB-INF/jsp/base/layout/classic/layout_classic.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	
+	
+	<!-- == Modern ================-->
+	
+	<definition name="modern_resource" template="/WEB-INF/jsp/base/include/modern_resource.jsp" />
+	
+	<definition name="definition_modern_base">
+		<put-attribute name="title" value="fsswms" />
+		<put-attribute name="resource" value="modern_resource" />
+	</definition>
+	
+	<!-- Modern Layout -->
+	<definition name="definition_modern" extends="definition_modern_base">
+		<put-attribute name="header" value="/WEB-INF/jsp/base/layout/modern/layout_modern_header.jsp" />
+		<put-attribute name="lnb" value="/WEB-INF/jsp/base/layout/modern/layout_modern_lnb.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/jsp/base/layout/modern/layout_modern_footer.jsp" />
+	</definition>
+	
+	<!-- Modern Layout -->
+	<definition name="modern:/*/*/*/*" extends="definition_modern" template="/WEB-INF/jsp/base/layout/modern/layout_modern.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	<!-- Modern Noframe -->
+	<definition name="mordern_noframe:/*/*/*/*" extends="definition_modern_base" template="/WEB-INF/jsp/base/layout/modern/layout_modern_no_frame.jsp">
+		<put-attribute name="content" value="/WEB-INF/jsp/mvc/{1}/{2}/{3}/{4}.jsp" />
+	</definition>
+	
+	
+	
+	
+	
+</tiles-definitions>

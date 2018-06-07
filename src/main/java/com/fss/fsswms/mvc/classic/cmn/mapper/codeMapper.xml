@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classic.cmn.code">
+
+	<!-- 콤보박스 정보 조회 (view로 변경)-->
+	<select id="selectCodeList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.code.selectCodeList */
+		       GBN
+			 , CD
+			 , NM
+		 FROM VW_COMBO_CODE
+		ORDER BY GBN, SORT, CD
+	</select>
+	
+</mapper>

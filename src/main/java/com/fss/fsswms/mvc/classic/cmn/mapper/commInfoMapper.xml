@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classic.cmn.commInfo">
+	<!-- 팝업확인 정보 조회 -->
+	<select id="selectPopChkList" parameterType="map" resultType="box">
+		/* PID : classic.cmn.commInfo.selectPopChkList */
+		/*여행사*/
+		SELECT TRAV_AGEN_CD AS CD, --매출처코드
+		  TRAV_AGEN_NM AS NM  --매출처명
+		FROM TB_TRAV_AGEN
+		WHERE 1=1
+		ANd USE_YN = 'Y'
+		AND 'TRAV' = #{gbn}
+		AND (TRAV_AGEN_CD LIKE '%'||#{searchStr}||'%' OR TRAV_AGEN_NM LIKE '%'||#{searchStr}||'%')		
+	</select>
+</mapper>

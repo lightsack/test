@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sys.sys03">
+	<!-- 창고 목록 조회 -->
+	<select id="mainList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys03.mainList */
+		       ROLE_CD
+             , ROLE_NM
+             , REG_ID
+             , REG_TIME
+             , UPD_ID
+             , UPD_TIME
+		  FROM TB_ROLE
+		 WHERE 1=1
+			<if test='roleNm not in {null, ""}'>
+				AND (
+					    UPPER(ROLE_CD) LIKE CONCAT('%',UPPER(#{roleNm}),'%')
+					 OR UPPER(ROLE_NM) LIKE CONCAT('%',UPPER(#{roleNm}),'%')
+					)
+		 	</if>
+		 ORDER BY ROLE_CD
+	</select>
+	
+	<select id="pgmList" parameterType="map" resultType="box">
+        SELECT /* PID : sys.sys03.pgmList */
+               P.PROG_ID
+             , CONCAT(CASE WHEN P.PROG_DIV='F' THEN ' ' ELSE '   - ' END, P.PROG_NM)  PROG_NM
+             , R.ROLE_CD
+             , CASE WHEN P.PROG_DIV='F'    THEN 'N' ELSE 'Y' END  ENBL_YN
+             , CASE WHEN R.PROG_ID IS NULL THEN 'N' ELSE 'Y' END  CHK
+          FROM TB_PROG P
+               LEFT OUTER JOIN TB_ROLE_PROG R ON P.PROG_ID = R.PROG_ID AND R.ROLE_CD = #{roleCd}
+         ORDER BY P.SORT
+	</select>
+	
+	<!-- 창고목록정보 수정 -->
+	<insert id="insertData" parameterType="map">
+		INSERT INTO TB_ROLE( ROLE_CD  /* PID : sys.sys03.insertData */
+                           , ROLE_NM
+                           , REG_ID
+                           , REG_TIME
+                           , UPD_ID
+                           , UPD_TIME
+                           )
+                     VALUES( #{roleCd}
+                           , #{roleNm}
+                           , #{loginId}
+                           , NOW()
+                           , #{loginId}
+                           , NOW()
+                           )
+	</insert>
+
+	<update id="updateData" parameterType="map">
+        UPDATE TB_ROLE   /* PID : sys.sys03.updateData */
+           SET ROLE_CD  = #{roleCd}
+             , ROLE_NM  = #{roleNm}
+             , UPD_ID   = #{loginId}
+             , UPD_TIME = NOW()
+         WHERE ROLE_CD = #{roleCd}
+	</update>
+	
+	<insert id="insertPgmData" parameterType="map">
+        <if test='chk eq "Y".toString()'>
+            INSERT INTO TB_ROLE_PROG( ROLE_CD
+                                    , PROG_ID
+                                    , REG_ID
+                                    , REG_TIME
+                                    , UPD_ID
+                                    , UPD_TIME
+                                    )
+                              VALUES( #{roleCd}
+                                    , #{progId}
+                                    , #{loginId}
+                                    , NOW()
+                                    , #{loginId}
+                                    , NOW()
+                                    )
+        </if>
+        <if test='chk neq "Y".toString()'>
+            DELETE FROM TB_ROLE_PROG
+             WHERE ROLE_CD = #{roleCd}
+               AND PROG_ID = #{progId}
+        </if>
+	</insert>
+
+	
+	<!-- 삭제 -->
+	<delete id="mainDelete" parameterType="map">
+        DELETE FROM TB_ROLE      WHERE ROLE_CD = #{roleCd};  /* PID : sys.sys03.deleteData */
+        DELETE FROM TB_ROLE_PROG WHERE ROLE_CD = #{roleCd};
+	</delete>
+	
+</mapper>
+

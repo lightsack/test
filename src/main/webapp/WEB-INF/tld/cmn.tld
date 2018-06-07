@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+	version="2.0">
+
+	<description>CMN Tag Library</description>
+	<display-name>CMN Tag Library</display-name>
+	<tlib-version>1.2</tlib-version>
+	<short-name>cmn</short-name>
+	<uri>http://fsswms.com</uri>
+	
+	<tag>
+  		<description>Code Combo Tag</description>
+		<name>codeCombo</name>
+		<tag-class>com.fss.fsswms.base.util.tag.CodeComboTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<name>gbn</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>size</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>optTxt</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<function>
+		<description>Object to Json</description>
+		<name>toJson</name>
+		<function-class>com.fss.fsswms.base.util.tag.CmnFuncTag</function-class>
+		<function-signature>java.lang.String toJson(java.lang.Object)</function-signature>
+	</function>	
+</taglib>

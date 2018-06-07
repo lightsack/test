@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classic.cmn.login">
+	
+	<!-- 사용자 정보 조회 -->
+	<select id="selectUser" parameterType="map" resultType="userVO">
+		SELECT  /* PID : classic.cmn.login.selectUser */
+		       USER_ID
+			 , USER_NM
+			 , PS_WD
+			 , USER_DIV
+			 , WORK_SHOP_CD
+			 , TEL_NO
+			 , HP_NO
+		  FROM TB_USER
+		 WHERE USER_ID = #{userId}
+	</select>
+	
+	<!-- 사용자별 프로그램 권한 정보 -->
+	<select id="selectUserProgAuthList" parameterType="userVO" resultType="box">
+        SELECT /* PID : classic.cmn.login.selectUserProgAuthList */
+               TP.PROG_ID
+             , TP.PROG_NM
+             , TP.PROG_DIV
+             , TP.PROG_URL
+             , TP.UP_PROG_ID
+          -- , FN_UP_PROG_NM(TP.PROG_ID) AS UP_PROG_NM
+             , COUNT(1) OVER(PARTITION BY TP.UP_PROG_ID)  UP_PROG_HAS_CNT
+          FROM TB_PROG TP
+             , (
+                SELECT DISTINCT T.USER_ID,T.PROG_ID
+                  FROM (SELECT TUP.USER_ID
+                             , TUP.PROG_ID
+                          FROM TB_USER_PROG TUP
+                         WHERE USER_ID = #{userId}
+                         UNION ALL
+                        SELECT TUR.USER_ID
+                             , TRP.PROG_ID
+                          FROM TB_USER_ROLE TUR
+                             , TB_ROLE_PROG TRP
+                         WHERE TUR.ROLE_CD = TRP.ROLE_CD
+                           AND TUR.USER_ID = #{userId}
+                       ) T
+               ) TUP
+         WHERE TP.PROG_ID = TUP.PROG_ID
+         ORDER BY TP.SORT ASC
+	</select>
+	
+	
+</mapper>	

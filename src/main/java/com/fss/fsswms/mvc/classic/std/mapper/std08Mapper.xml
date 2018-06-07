@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="std.std08">
+	<!-- 창고 목록 조회 -->
+	<select id="mainList" parameterType="map" resultType="box">
+        SELECT /* PID : std.std08.mainList */
+		       CATE_CD
+             , CATE_NM
+             , LCLSS_CD
+             , MCLSS_CD
+             , CATE_LVL_DIV
+		  FROM TB_CATE
+		 WHERE CATE_LVL_DIV = '1'
+			<if test='cateNm not in {null, ""}'>
+				AND (
+					    UPPER(CATE_CD) LIKE CONCAT('%',UPPER(#{cateNm}),'%')
+					 OR UPPER(CATE_NM) LIKE CONCAT('%',UPPER(#{cateNm}),'%')
+					)
+		 	</if>
+		 ORDER BY CATE_CD
+	</select>
+	
+	<select id="detlList" parameterType="map" resultType="box">
+        SELECT /* PID : std.std08.detlList */
+		       MCLSS_CD  ORG_CATE_CD
+             , MCLSS_CD  CATE_CD
+             , CATE_NM
+             , LCLSS_CD
+             , MCLSS_CD
+             , CATE_LVL_DIV
+		  FROM TB_CATE
+		 WHERE CATE_LVL_DIV = '2'
+           AND LCLSS_CD = #{cateCd}
+         ORDER BY CATE_CD
+	</select>
+	
+	
+	<delete id="mainDelete" parameterType="map">
+        DELETE FROM TB_CATE  /* PID : std.std08.mainDelete */
+         WHERE LCLSS_CD  = #{cateCd}
+	</delete>
+	
+	<!-- 창고목록정보 수정 -->
+	<insert id="insertData" parameterType="map">
+		/* PID : std.std08.insertData */
+		INSERT INTO TB_CATE( CATE_CD
+                           , CATE_NM
+                           , LCLSS_CD
+                           , MCLSS_CD
+                           , CATE_LVL_DIV
+                           , REG_ID
+                           , REG_TIME
+                           , UPD_ID
+                           , UPD_TIME
+                           )
+                     VALUES( #{cateCd}
+                           , #{cateNm}
+                           , #{cateCd}
+                           , '0000'
+                           , '1'
+                           , #{loginId}
+                           , NOW()
+                           , #{loginId}
+                           , NOW()
+                           )
+	</insert>
+
+	<update id="updateData" parameterType="map">
+        UPDATE TB_CATE  /* PID : std.std08.updateMstData */
+           SET CATE_CD  = #{cateCd}
+             , MAIN_NM  = #{cateNm}
+             , USE_YN   = #{useYn}
+             , UPD_ID   = #{loginId}
+             , UPD_TIME = NOW()
+         WHERE CATE_CD  = #{cateCd}
+           AND CATE_LVL_DIV = '1'
+	</update>
+	
+	
+	<!-- 삭제 -->
+	<delete id="deleteMst" parameterType="map">
+        BEGIN
+            /* PID : std.std08.deleteData */
+            DELETE TB_CATE WHERE CATE_CD  = #{cateCd} AND CATE_LVL_DIV='1';
+            DELETE TB_CATE WHERE LCLSS_CD = #{cateCd} AND CATE_LVL_DIV='2';
+        END;
+	</delete>
+	
+	<insert id="insertDtlData" parameterType="map">
+		INSERT INTO TB_CATE( CATE_CD  /* PID : std.std08.insertDtlData */
+                           , CATE_NM
+                           , LCLSS_CD
+                           , MCLSS_CD
+                           , CATE_LVL_DIV
+                           , REG_ID
+                           , REG_TIME
+                           , UPD_ID
+                           , UPD_TIME
+                           )
+                     VALUES( CONCAT(#{LClssCd},#{cateCd})
+                           , #{cateNm}
+                           , #{LClssCd}
+                           , #{cateCd}
+                           , '2'
+                           , #{loginId}
+                           , NOW()
+                           , #{loginId}
+                           , NOW()
+                           )
+	</insert>
+
+	<update id="updateDtlData" parameterType="map">
+        UPDATE TB_CATE  /* PID : std.std08.updateDtlData */
+           SET CATE_CD  = CONCAT(#{LClssCd},#{cateCd})
+             , MAIN_NM  = #{cateNm}
+             , LCLSS_CD = #{lclssCd}
+             , MCLSS_CD = #{cateCd}
+             , USE_YN   = #{useYn}
+             , UPD_ID   = #{loginId}
+             , UPD_TIME = NOW()
+         WHERE CATE_CD  = #{cateCd}
+           AND CATE_LVL_DIV = '2'
+	</update>
+
+	<delete id="deleteDtlData" parameterType="map">
+        DELETE FROM TB_CATE  /* PID : std.std08.deleteDtlData */
+         WHERE CATE_CD  = #{cateCd}
+           AND CATE_LVL_DIV = '2'
+	</delete>
+	
+</mapper>
+

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classic.cmn.popup">
+	
+	<!-- 엑셀업로드 삭제 -->
+	<delete id="deleteExcelUpload" parameterType="map">
+		DELETE /* PID : classic.cmn.popup.deleteExcelUpload */ 
+		  FROM TB_EXCEL_UPLOAD
+		 WHERE PROG_ID = #{progId}
+		   AND USER_ID = #{userId}
+	</delete>
+	
+	<insert id="insertExcelUpload" parameterType="map">
+		/* PID : classic.cmn.popup.insertExcelUpload */
+		 INSERT INTO TB_EXCEL_UPLOAD 
+		     ( PROG_ID
+		     , USER_ID
+		     , GOD_CD
+		     , STR1, STR2, STR3, STR4, STR5, STR6, STR7, STR8, STR9, STR10
+		     , STR11, STR12, STR13, STR14, STR15, STR16, STR17, STR18, STR19, STR20
+		     , NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, NUM10 
+		     , NUM11, NUM12, NUM13, NUM14, NUM15, NUM16, NUM17, NUM18, NUM19, NUM20
+		     , NUM21, NUM22, NUM23, NUM24, NUM25, NUM26, NUM27, NUM28, NUM29, NUM30
+		     , NUM31, NUM32, NUM33, NUM34, NUM35, NUM36, NUM37, NUM38, NUM39, NUM40
+		     )
+		VALUES 
+		     ( #{progId}
+		     , #{userId}
+		     , #{godCd}
+		     , #{str1}, #{str2}, #{str3}, #{str4}, #{str5}, #{str6}, #{str7}, #{str8}, #{str9}, #{str10}
+		     , #{str11}, #{str12}, #{str13}, #{str14}, #{str15}, #{str16}, #{str17}, #{str18}, #{str19}, #{str20}
+		     , #{num1}, #{num2}, #{num3}, #{num4}, #{num5}, #{num6}, #{num7}, #{num8}, #{num9}, #{num10}
+		     , #{num11}, #{num12}, #{num13}, #{num14}, #{num15}, #{num16}, #{num17}, #{num18}, #{num19}, #{num20}
+		     , #{num21}, #{num22}, #{num23}, #{num24}, #{num25}, #{num26}, #{num27}, #{num28}, #{num29}, #{num30}
+		     , #{num31}, #{num32}, #{num33}, #{num34}, #{num35}, #{num36}, #{num37}, #{num38}, #{num39}, #{num40}
+		     )
+	</insert>
+	
+	<!-- 엑셀업로드 목록(다건) 등록 -->
+	<insert id="insertExcelUploadList" parameterType="map">
+		/* PID : classic.cmn.popup.insertExcelUploadList */
+		INSERT ALL
+		<foreach collection="insertDataList" item="i"> 
+		  INTO TB_EXCEL_UPLOAD 
+		     ( PROG_ID
+		     , USER_ID
+		     , GOD_CD
+		     , STR1, STR2, STR3, STR4, STR5, STR6, STR7, STR8, STR9, STR10
+		     , STR11, STR12, STR13, STR14, STR15, STR16, STR17, STR18, STR19, STR20
+		     , NUM1, NUM2, NUM3, NUM4, NUM5, NUM6, NUM7, NUM8, NUM9, NUM10 
+		     , NUM11, NUM12, NUM13, NUM14, NUM15, NUM16, NUM17, NUM18, NUM19, NUM20
+		     , NUM21, NUM22, NUM23, NUM24, NUM25, NUM26, NUM27, NUM28, NUM29, NUM30
+		     , NUM31, NUM32, NUM33, NUM34, NUM35, NUM36, NUM37, NUM38, NUM39, NUM40
+		     )
+		VALUES 
+		     ( #{progId}
+		     , #{userId}
+		     , #{i.godCd}
+		     , #{i.str1}, #{i.str2}, #{i.str3}, #{i.str4}, #{i.str5}, #{i.str6}, #{i.str7}, #{i.str8}, #{i.str9}, #{i.str10}
+		     , #{i.str11}, #{i.str12}, #{i.str13}, #{i.str14}, #{i.str15}, #{i.str16}, #{i.str17}, #{i.str18}, #{i.str19}, #{i.str20}
+		     , #{i.num1}, #{i.num2}, #{i.num3}, #{i.num4}, #{i.num5}, #{i.num6}, #{i.num7}, #{i.num8}, #{i.num9}, #{i.num10}
+		     , #{i.num11}, #{i.num12}, #{i.num13}, #{i.num14}, #{i.num15}, #{i.num16}, #{i.num17}, #{i.num18}, #{i.num19}, #{i.num20}
+		     , #{i.num21}, #{i.num22}, #{i.num23}, #{i.num24}, #{i.num25}, #{i.num26}, #{i.num27}, #{i.num28}, #{i.num29}, #{i.num30}
+		     , #{i.num31}, #{i.num32}, #{i.num33}, #{i.num34}, #{i.num35}, #{i.num36}, #{i.num37}, #{i.num38}, #{i.num39}, #{i.num40}
+		     )
+		</foreach>
+		SELECT * FROM DUAL
+	</insert>
+	
+	
+	<!-- 상품별 조회 -->
+	<select id="selectGodCustList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.popup.selectGodCustList */
+		      GOD_CD   --상품코드
+		    , STR1 AS PSPT_NO   --여권번호
+		    , STR2 AS CUST_NM   --고객명
+		    , STR3 AS TEL_NO    --전화번호
+		    , STR4 AS BIRT_DT   --생년월일
+		    , NUM1 AS FEE_RATE11 --롯데 수입
+		    , NUM2 AS FEE_RATE12 --롯데 국산
+		    , NUM3 AS FEE_RATE13 --롯데 L/V
+		    , NUM4 AS FEE_RATE21 --두타 수입
+		    , NUM5 AS FEE_RATE22 --두타 국산
+		    , NUM6 AS FEE_RATE23 --두타 L/V
+		    , NUM7 AS FEE_RATE31 --갤러리아 수입
+		    , NUM8 AS FEE_RATE32 --갤러리아 국산
+		    , NUM9 AS FEE_RATE33 --갤러리아 L/V
+		    , NUM10 AS FEE_RATE41 --신세계 수입
+		    , NUM11 AS FEE_RATE42 --신세계 국산
+		    , NUM12 AS FEE_RATE43 --신세계 L/V
+		    , NUM13 AS FEE_RATE51 --신라 수입
+		    , NUM14 AS FEE_RATE52 --신라 국산
+		    , NUM15 AS FEE_RATE53 --신라 L/V
+		    , NUM16 AS FEE_RATE61 --신라아이파크 수입
+		    , NUM17 AS FEE_RATE62 --신라아이파크 국산
+		    , NUM18 AS FEE_RATE63 --신라아이파크 L/V
+		    , NUM19 AS FEE_RATE71 --동화 수입
+		    , NUM20 AS FEE_RATE72 --동화 국산
+		    , NUM21 AS FEE_RATE73 --동화 L/V		    
+		    , NUM22 AS FEE_RATE81 --롯데제주 수입
+		    , NUM23 AS FEE_RATE82 --롯데제주 국산
+		    , NUM24 AS FEE_RATE83 --롯데제주 L/V
+		    , NUM25 AS FEE_RATE91 --신라제주 수입
+		    , NUM26 AS FEE_RATE92 --신라제주 국산
+		    , NUM27 AS FEE_RATE93 --신라제주 L/V
+		    , NUM28 AS FEE_RATE101 --롯데부산 수입
+		    , NUM29 AS FEE_RATE102 --롯데부산 국산
+		    , NUM30 AS FEE_RATE103 --롯데부산 L/V
+		    , NUM31 AS FEE_RATE111 --신세계부산 수입
+		    , NUM32 AS FEE_RATE112 --신세계부산 국산
+		    , NUM33 AS FEE_RATE113 --신세계부산 L/V
+		  FROM TB_EXCEL_UPLOAD
+		 WHERE 1 = 1
+		   AND PROG_ID = #{progId} 
+		   AND USER_ID = #{userId}
+	</select>
+	
+	<!-- 그룹코드 조회 -->
+	<select id="selectGodGrupList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.popup.selectGodGrupList */
+		      GOD_CD   --상품코드
+		    , STR1 AS REG_DT   --등록일자
+		    , STR2 AS DUTY_SHOP_A --롯데 
+		    , STR3 AS DUTY_SHOP_B --두타 
+		    , STR4 AS DUTY_SHOP_C --갤러리아 
+		    , STR5 AS DUTY_SHOP_D --신세계 
+		    , STR6 AS DUTY_SHOP_E --신라 
+		    , STR7 AS DUTY_SHOP_F --신라아이파크 
+		    , STR8 AS DUTY_SHOP_G --동화    
+		    , STR9 AS DUTY_SHOP_H --롯데제주
+		    , STR10 AS DUTY_SHOP_I --신라제주
+		    , STR11 AS DUTY_SHOP_J --롯데부산
+		    , STR12 AS DUTY_SHOP_K --신세계부산
+		  FROM TB_EXCEL_UPLOAD
+		 WHERE 1 = 1
+		   AND PROG_ID = #{progId} 
+		   AND USER_ID = #{userId}
+	</select>
+
+	<!-- 여행사별 매출 조회 -->
+	<select id="selectSaleList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.popup.selectSaleList */
+		      A.STR1 AS SALE_DT
+		    , A.STR2 AS DUTY_SHOP_CD
+		    , A.STR3 AS GRUP_CD
+		    , A.STR4 AS PSPT_NO
+		    , A.STR5 AS CUST_NM
+		    , A.STR6 AS CAL_DT
+            , A.STR7 AS CAL_SEQ
+		    , A.NUM1 AS SALE_AMT01
+		    , A.NUM2 AS FEE_RATE01
+		    , A.NUM3 AS SALE_AMT02
+		    , A.NUM4 AS FEE_RATE02
+		    , A.NUM5 AS SALE_AMT03
+		    , A.NUM6 AS FEE_RATE03
+		    , A.NUM7 AS USD_EXCH_RATE
+            , CASE WHEN B.DUTY_SHOP_CD IS NULL THEN 'Y'
+                   WHEN A.STR3 IS NULL THEN 'Y'
+                   WHEN A.NUM1 + A.NUM3 + A.NUM5 = 0 THEN 'Y' ELSE 'N' END AS ERROR_YN
+		  FROM TB_EXCEL_UPLOAD A, TB_DUTY_SHOP B
+		 WHERE 1 = 1
+           AND A.STR2 = B.DUTY_SHOP_CD(+)
+		   AND A.PROG_ID = #{progId} 
+		   AND A.USER_ID = #{userId}
+	</select>
+		
+	<!-- 고객 정산상세정보 조회 -->
+	<select id="selectCustSale" parameterType="map" resultType="box">
+		/* 고객 정산상세정보 조회 */
+	    SELECT  /* PID : classic.cmn.popup.selectCustSale */
+		       DUTY_SHOP_CD
+             , FN_DUTY_SHOP_NM(DUTY_SHOP_CD) AS DUTY_SHOP_NM
+             , SALE_DT
+             , GRUP_CD
+             , SUM(GOD_DIV_1_SALE_AMT) AS GOD_DIV_1_SALE_AMT
+             , SUM(GOD_DIV_2_SALE_AMT) AS GOD_DIV_2_SALE_AMT
+             , SUM(GOD_DIV_3_SALE_AMT) AS GOD_DIV_3_SALE_AMT
+             , SUM(GOD_DIV_1_BF_FEE_AMT) AS GOD_DIV_1_BF_FEE_AMT
+             , SUM(GOD_DIV_2_BF_FEE_AMT) AS GOD_DIV_2_BF_FEE_AMT
+             , SUM(GOD_DIV_3_BF_FEE_AMT) AS GOD_DIV_3_BF_FEE_AMT
+             , SUM(GOD_DIV_1_FEE_AMT) AS GOD_DIV_1_FEE_AMT
+             , SUM(GOD_DIV_2_FEE_AMT) AS GOD_DIV_2_FEE_AMT
+             , SUM(GOD_DIV_3_FEE_AMT) AS GOD_DIV_3_FEE_AMT
+          FROM (
+                SELECT DUTY_SHOP_CD
+                     , SALE_DT
+                     , GRUP_CD
+                     , SUM(CASE WHEN GOD_DIV='1' THEN SALE_AMT ELSE 0 END) AS GOD_DIV_1_SALE_AMT
+                     , SUM(CASE WHEN GOD_DIV='2' THEN SALE_AMT ELSE 0 END) AS GOD_DIV_2_SALE_AMT
+                     , SUM(CASE WHEN GOD_DIV='3' THEN SALE_AMT ELSE 0 END) AS GOD_DIV_3_SALE_AMT
+                     , SUM(CASE WHEN GOD_DIV='1' THEN ROUND(SALE_AMT*(FEE_RATE/100),1) ELSE 0 END) AS GOD_DIV_1_BF_FEE_AMT
+                     , SUM(CASE WHEN GOD_DIV='2' THEN ROUND(SALE_AMT*(FEE_RATE/100),1) ELSE 0 END) AS GOD_DIV_2_BF_FEE_AMT
+                     , SUM(CASE WHEN GOD_DIV='3' THEN ROUND(SALE_AMT*(FEE_RATE/100),1) ELSE 0 END) AS GOD_DIV_3_BF_FEE_AMT
+                     , SUM(CASE WHEN GOD_DIV='1' THEN FEE_AMT ELSE 0 END) AS GOD_DIV_1_FEE_AMT
+                     , SUM(CASE WHEN GOD_DIV='2' THEN FEE_AMT ELSE 0 END) AS GOD_DIV_2_FEE_AMT
+                     , SUM(CASE WHEN GOD_DIV='3' THEN FEE_AMT ELSE 0 END) AS GOD_DIV_3_FEE_AMT
+                  FROM TB_SALE
+                 WHERE 1 = 1
+			       AND TRAV_AGEN_CD = #{travAgenCd}
+			       AND PSPT_NO = #{psptNo}
+	      		   AND CAL_DT = #{calDt}
+	      		   AND CAL_SEQ = #{calSeq}
+	      		   AND BOX_NO = #{boxNo}
+                 GROUP BY DUTY_SHOP_CD, SALE_DT, GRUP_CD, GOD_DIV
+         		)
+         GROUP BY DUTY_SHOP_CD, SALE_DT, GRUP_CD
+		 ORDER BY DUTY_SHOP_CD, SALE_DT
+	</select>
+	
+	<!-- 고객 정산정보 조회 -->
+	<select id="selectCustSaleCal" parameterType="map" resultType="box">
+		/* 상품별 고객매출정보 조회 */
+	    SELECT  /* PID : classic.cmn.popup.selectCustSaleCal */
+		       FN_TRAV_AGEN_ENG_NM(A.TRAV_AGEN_CD)||' - '||MIN(A.SALE_DT)||' - '||A.CUST_NM AS GOD_NM
+		     , TO_CHAR(TO_DATE(MIN(A.SALE_DT), 'YYYYMMDD'),'YYYY-MM-DD')||' ~ '||TO_CHAR(TO_DATE(MAX(A.SALE_DT), 'YYYYMMDD'),'YYYY-MM-DD') AS GOD_DT
+		     , TO_CHAR(TO_DATE(MIN(A.SALE_DT), 'YYYYMMDD'),'YYYY-MM-DD') AS GOD_STR_DT
+		     , TO_CHAR(TO_DATE(MAX(A.SALE_DT), 'YYYYMMDD'),'YYYY-MM-DD') AS GOD_END_DT
+		     , A.PSPT_NO
+		     , A.CUST_NM
+		     , '' AS TEL_NO  
+		     , TO_CHAR(TO_DATE(A.CAL_DT, 'YYYYMMDD'),'YYYY-MM-DD') AS CAL_DT  --정산일자
+		     , '' AS CAL_NO  --정산번호
+		     , SUM(FEE_AMT) AS CAL_AMT  --정산금액
+	    FROM TB_SALE A
+	    WHERE 1 = 1
+	      AND A.TRAV_AGEN_CD = #{travAgenCd}
+	      AND A.PSPT_NO = #{psptNo}
+	      AND A.CAL_DT = #{calDt}
+	      AND A.CAL_SEQ = #{calSeq}
+	      AND A.BOX_NO = #{boxNo}
+	    GROUP BY A.TRAV_AGEN_CD,  A.CAL_DT, A.PSPT_NO, A.CUST_NM
+	</select>
+	
+	
+	<!-- 게시판 정보 조회 -->
+	<select id="selectBoard" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.popup.selectBoard */
+		       REG_DT
+		     , BOARD_DIV
+		     , REG_NO
+		     , NOTICE_YN
+		     , TITLE
+		     , CONTENT
+		     , PIC_URL
+		  FROM TB_BOARD
+		 WHERE BOARD_DIV = #{boardDiv}
+		   AND REG_NO = #{regNo}
+	</select>
+	
+	
+	<!-- 여행사 목록 조회 -->
+	<select id="selectTravAgenList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.popup.selectTravAgenList */
+		       TRAV_AGEN_CD		--여행사코드
+		     , TRAV_AGEN_NM     --여행사명
+		     , USE_YN          	--사용여부
+		  FROM TB_TRAV_AGEN
+		 WHERE USE_YN = 'Y'
+		<if test='travAgenCdorNm not in {null, ""}'>
+			   AND (TRAV_AGEN_CD LIKE '%'||#{travAgenCdorNm}||'%' OR TRAV_AGEN_NM LIKE '%'||#{travAgenCdorNm}||'%')
+		</if>
+		 ORDER BY ${sortColumn} ${sortOrder}
+	</select>
+	
+	
+	<!-- 일괄 엑셀 업로드 구매 정보 생성 프로시저 실행 -->
+	<select id="callSpTbSaleInsert" statementType="CALLABLE" parameterType="map" resultType="box">
+		{ call /* PID : classic.cmn.popup.callSpTbSaleInsert */ SP_TB_SALE_INSERT
+		     (
+		       #{progId, mode=IN, jdbcType=VARCHAR}
+		     , #{travAgenCd, mode=IN, jdbcType=VARCHAR}
+		     , #{boxNo, mode=IN, jdbcType=INTEGER}
+		     , #{userId, mode=IN, jdbcType=VARCHAR}
+		     , #{code, mode=OUT, jdbcType=VARCHAR}
+		     , #{errmsg, mode=OUT, jdbcType=VARCHAR}
+		     )
+		}
+	</select>
+</mapper>

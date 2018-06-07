@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<setting name="callSettersOnNulls" value="true" />
+		<setting name="jdbcTypeForNull" value="NULL" />
+		<setting name="logPrefix" value="mybatis.mapper."/>
+	</settings>
+	<typeAliases>
+		<typeAlias alias="box" type="com.fss.fsswms.base.data.Box" />
+		<typeAlias alias="userVO" type="com.fss.fsswms.mvc.classic.cmn.vo.user.UserVO" />
+		<typeAlias alias="godCustVO" type="com.fss.fsswms.mvc.modern.cmn.vo.user.GodCustVO" />
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.fss.fsswms.base.mybatis.interceptor.MybatisLoggingInterceptor" />
+	</plugins>
+</configuration>

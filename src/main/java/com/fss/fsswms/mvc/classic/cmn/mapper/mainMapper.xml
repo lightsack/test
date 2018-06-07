@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="classic.cmn.main">
+
+	<!-- 부서별 프로그램 목록 조회 (limit 8)-->
+	<select id="selectDeptProgList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.main.selectDeptProgList */
+		       PROG_ID
+		     , PROG_NM
+		     , PROG_URL
+		  FROM 
+		     ( SELECT TDP.PROG_ID
+		            , TP.PROG_NM
+		            , TP.PROG_URL
+		         FROM TB_DEPT_PROG TDP, TB_PROG TP
+		        WHERE TDP.PROG_Id = TP.PROG_ID
+		          AND TP.PROG_DIV = 'P' 
+		          AND TDP.DEPT = #{dept}
+		        ORDER BY TDP.SORT ASC, TP.SORT ASC ) 
+		 WHERE ROWNUM &lt;= 8 
+	</select>
+	
+	
+	<!-- 게시판 목록 조회 (limit 5)-->
+	<select id="selectBoardList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.main.selectBoardList */
+		       REG_NO
+			 , BOARD_DIV
+		     , TITLE
+		     , DECODE(SIGN(LENGTHB(TITLE)-73),1,SUBSTRB(TITLE,1,73)||'..',TITLE) AS SUB_TITLE
+		     , NOTICE_YN
+		     , CASE WHEN REG_DT BETWEEN TO_CHAR(SYSDATE-7, 'YYYYMMDD') AND TO_CHAR(SYSDATE, 'YYYYMMDD')
+                    THEN 'Y' ELSE 'N' END AS NEW_YN
+		  FROM 
+			 ( SELECT REG_DT
+		            , BOARD_DIV
+		            , REG_NO
+		            , NOTICE_YN
+		            , TITLE
+		            , CONTENT
+		            , PIC_URL
+		         FROM TB_BOARD
+		        WHERE BOARD_DIV = #{boardDiv}
+		        ORDER BY NOTICE_YN DESC, REG_DT DESC, UPD_TIME DESC )
+		 WHERE ROWNUM &lt;= 5
+	</select>
+	
+	
+	<!-- 달력 정보 조회 -->
+	<select id="selectCalendarList" parameterType="map" resultType="box">
+		SELECT /* PID : classic.cmn.main.selectCalendarList */ 
+		       TO_NUMBER(A.DAY) AS DAY
+		     , WEEK
+		     , WEEKLY
+		     , B.BOARD_DIV
+		     , B.REG_NO
+		     , B.NOTICE_YN
+		     , B.TITLE
+		     , B.REG_DT
+		     , DECODE(SIGN(LENGTHB(B.TITLE)-38),1,SUBSTRB(B.TITLE,1,38)||'..',TITLE) AS SUB_TITLE
+		     , CASE WHEN #{yearMonth} || A.DAY = TO_CHAR(SYSDATE, 'YYYYMMDD') THEN 'Y' ELSE 'N' END AS TODAY_YN
+		  FROM
+		     (
+		        SELECT LPAD(LEVEL,2,'0') AS DAY
+		             , TO_CHAR(TO_DATE(#{yearMonth},'YYYYMM')+LEVEL-1,'D') AS WEEK
+		             , TO_CHAR(TO_DATE(#{yearMonth},'YYYYMM')+LEVEL,'IW') AS WEEKLY
+		          FROM DUAL
+		        CONNECT BY LEVEL &lt;= TO_CHAR(LAST_DAY(TO_DATE(#{yearMonth},'YYYYMM')),'DD')
+		    ) A,
+		    ( 
+		        SELECT TO_CHAR(TO_DATE(REG_DT, 'YYYYMMDD'), 'DD') AS DAY
+		             , BOARD_DIV
+		             , REG_NO
+		             , NOTICE_YN
+		             , TITLE
+		             , REG_DT
+		             , UPD_TIME
+		          FROM
+		            ( 
+		                SELECT 1 RNUM
+		                     , '' AS BOARD_DIV
+		                     , '' AS REG_NO
+		                     , '' AS NOTICE_YN
+		                     , TO_CHAR(USD_EXCH_RATE) AS TITLE
+		                     , REG_DT
+		                     , UPD_TIME
+		                  FROM TB_EXCH_RATE
+		                 WHERE 1=1
+		                   AND SUBSTR(REG_DT,1,6) = #{yearMonth}
+		                UNION ALL
+		                SELECT (ROW_NUMBER() OVER(PARTITION BY REG_DT ORDER BY REG_DT))+1 RNUM
+		                     , BOARD_DIV
+		                     , REG_NO
+		                     , NOTICE_YN
+		                     , TITLE
+		                     , REG_DT
+		                     , UPD_TIME
+		                  FROM TB_BOARD
+		                 WHERE 1=1
+		                   AND SUBSTR(REG_DT,1,6) = #{yearMonth}
+		                 ORDER BY REG_DT, NOTICE_YN DESC, UPD_TIME DESC
+		            )
+		        WHERE RNUM &lt;= 4
+		    ) B
+		 WHERE A.DAY = B.DAY(+)
+		 ORDER BY A.DAY, B.NOTICE_YN DESC, B.UPD_TIME DESC
+	</select>
+	
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration>
+    <Appenders>
+        <Console name="console" target="SYSTEM_OUT">
+        	<PatternLayout pattern="%d %5p [%c] %m%n" />
+        </Console>
+        <RollingFile name="file" fileName="/db/logs/fsswms/fsswms.log" filePattern="/db/logs/fsswms/fsswms.%d{yyyy-MM-dd}.log" append="true">
+			<PatternLayout pattern="%d %5p [%c] %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy />
+			</Policies>
+		</RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="egovframework" level="DEBUG" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="org.springframework" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+            <AppenderRef ref="file"/>
+        </Logger>
+        <logger name="jdbc.sqlonly" level="INFO" additivity="false">
+	        <appender-ref ref="console" />
+	        <appender-ref ref="file" />
+	    </logger>
+	    <logger name="jdbc.resultsettable" level="INFO" additivity="false">
+	        <appender-ref ref="console" />
+	    </logger>
+	    <logger name="jdbc.audit" level="WARN" additivity="false">
+	        <appender-ref ref="console" />
+	    </logger>
+	    <logger name="jdbc.resultset" level="WARN" additivity="false">
+	        <appender-ref ref="console" />
+	    </logger>
+	    <logger name="jdbc.sqltiming" level="WARN" additivity="false">
+	        <appender-ref ref="console" />
+	    </logger>
+        <Root level="DEBUG">
+        	<AppenderRef ref="console"/>
+        	<appender-ref ref="file" />
+        </Root>
+    </Loggers>
+</Configuration>
